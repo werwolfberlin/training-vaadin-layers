@@ -1,0 +1,1 @@
+This Folder is the content root for static image resources when the project is packed as WAR (standalone application) 
