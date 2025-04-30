@@ -14,6 +14,6 @@ public class SpringFrameworkConverter {
     }
 
     public static PageRequest convertToPageRequest(Page page) {
-        return PageRequest.of(page.pageSize(), page.page(), convertSortOrder(page));
+        return PageRequest.of(page.page(), page.pageSize(), convertSortOrder(page));
     }
 }
