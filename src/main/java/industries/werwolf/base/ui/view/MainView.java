@@ -1,5 +1,6 @@
 package industries.werwolf.base.ui.view;
 
+import com.vaadin.flow.component.html.Image;
 import industries.werwolf.base.ui.component.ViewToolbar;
 
 import com.vaadin.flow.component.UI;
@@ -20,6 +21,7 @@ public final class MainView extends Main {
         addClassName(LumoUtility.Padding.MEDIUM);
         add(new ViewToolbar("Main"));
         add(new Div("Please select a view from the menu on the left."));
+        add(new Image("VaadinLogomark_RGB_500x500.png", "Vaadin logo"));
     }
 
     /**
