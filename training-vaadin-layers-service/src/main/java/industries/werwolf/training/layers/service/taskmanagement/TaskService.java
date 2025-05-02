@@ -3,14 +3,12 @@ package industries.werwolf.training.layers.service.taskmanagement;
 import industries.werwolf.training.layers.persistence.jpa.taskmanagement.TaskJpa;
 import industries.werwolf.training.layers.persistence.taskmanagement.Task;
 import industries.werwolf.training.layers.persistence.taskmanagement.TaskRepository;
-import industries.werwolf.training.layers.persistence.util.Page;
-import industries.werwolf.training.layers.service.util.FilterableDataProvider;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
 
 @Service
 public class TaskService {
@@ -35,11 +33,7 @@ public class TaskService {
         taskRepository.save(task);
     }
 
-    public List<Task> list(Page page) {
-        return taskRepository.findAllTasks(page);
-    }
-
-    public FilterableDataProvider<Task> getTaskListDataProvider() {
-        return page -> taskRepository.findAllTasks(page).stream();
+    public Collection<Task> getAllTasks() {
+        return taskRepository.findAllTasks();
     }
 }
