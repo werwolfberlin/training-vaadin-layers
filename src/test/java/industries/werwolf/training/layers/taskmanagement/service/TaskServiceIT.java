@@ -7,12 +7,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -40,7 +41,8 @@ class TaskServiceIT {
         var now = clock.instant();
         var due = LocalDate.of(2025, 2, 7);
         taskService.createTask("Do this", due);
-        assertThat(taskService.list(PageRequest.ofSize(1))).singleElement()
+        List<Task> allTasks = new ArrayList<>(taskService.getAllTasks());
+        assertThat(allTasks.getLast())
                 .matches(task -> task.getDescription().equals("Do this") && due.equals(task.getDueDate())
                         && task.getCreationDate().isAfter(now));
     }

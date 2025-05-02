@@ -1,8 +1,5 @@
 package industries.werwolf.training.layers.taskmanagement.ui.view;
 
-import industries.werwolf.training.layers.base.ui.component.ViewToolbar;
-import industries.werwolf.training.layers.taskmanagement.domain.Task;
-import industries.werwolf.training.layers.taskmanagement.service.TaskService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -15,13 +12,14 @@ import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import industries.werwolf.training.layers.base.ui.component.ViewToolbar;
+import industries.werwolf.training.layers.taskmanagement.domain.Task;
+import industries.werwolf.training.layers.taskmanagement.service.TaskService;
 
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Optional;
-
-import static com.vaadin.flow.spring.data.VaadinSpringDataHelpers.toSpringPageRequest;
 
 @Route("task-list")
 @PageTitle("Task List")
@@ -56,7 +54,7 @@ public class TaskListView extends Main {
         var dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(getLocale());
 
         taskGrid = new Grid<>();
-        taskGrid.setItems(query -> taskService.list(toSpringPageRequest(query)).stream());
+        taskGrid.setItems(taskService.getAllTasks());
         taskGrid.addColumn(Task::getDescription).setHeader("Description");
         taskGrid.addColumn(task -> Optional.ofNullable(task.getDueDate()).map(dateFormatter::format).orElse("Never"))
                 .setHeader("Due Date");

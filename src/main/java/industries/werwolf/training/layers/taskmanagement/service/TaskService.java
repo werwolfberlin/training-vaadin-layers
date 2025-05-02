@@ -3,14 +3,13 @@ package industries.werwolf.training.layers.taskmanagement.service;
 import industries.werwolf.training.layers.taskmanagement.domain.Task;
 import industries.werwolf.training.layers.taskmanagement.domain.TaskRepository;
 import org.jspecify.annotations.Nullable;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -36,8 +35,7 @@ public class TaskService {
         taskRepository.saveAndFlush(task);
     }
 
-    public List<Task> list(Pageable pageable) {
-        return taskRepository.findAllBy(pageable).toList();
+    public Collection<Task> getAllTasks() {
+        return taskRepository.findAll() ;
     }
-
 }
