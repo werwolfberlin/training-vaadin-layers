@@ -1,30 +1,27 @@
 package industries.werwolf.training.layers.ui.util;
 
-import com.vaadin.flow.data.provider.CallbackDataProvider;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.provider.QuerySortOrder;
-import com.vaadin.flow.data.provider.SortDirection;
-import industries.werwolf.training.layers.persistence.util.Page;
+import industries.werwolf.training.layers.persistence.filter.GlobalFilter;
 import industries.werwolf.training.layers.persistence.util.SortOrder;
 import industries.werwolf.training.layers.service.util.FilterableDataProvider;
 
+import java.util.List;
 import java.util.stream.Stream;
 
-public class GridDataProviderAdapter<T> implements CallbackDataProvider.FetchCallback<T, Void> {
+public class GridDataProviderAdapter<T, F extends GlobalFilter> extends AbstractDataProviderAdapter<T, F, Void> {
 
-    private final FilterableDataProvider<T> dataProvider;
+    private final FilterableDataProvider<T, F> dataProvider;
 
-    public GridDataProviderAdapter(FilterableDataProvider<T> dataProvider) {
+    public GridDataProviderAdapter(FilterableDataProvider<T, F> dataProvider) {
         this.dataProvider = dataProvider;
     }
 
     @Override
-    public Stream<T> fetch(Query<T, Void> query) {
-        return dataProvider.fetch(Page.of(query.getPage(), query.getPageSize(),
-                        query.getSortOrders().stream().map(GridDataProviderAdapter::toSortOrder).toList()));
+    public Stream<T> fetchAll(int offset, int limit, F filter, List<SortOrder> sortOrders) {
+        return dataProvider.fetch(offset, limit, filter, sortOrders);
     }
 
-    private static SortOrder toSortOrder(QuerySortOrder so) {
-        return new SortOrder(so.getSorted(), so.getDirection() == SortDirection.ASCENDING ? SortOrder.Direction.ASC : SortOrder.Direction.DESC);
+    @Override
+    public long count(F filter) {
+        return dataProvider.count(filter);
     }
 }

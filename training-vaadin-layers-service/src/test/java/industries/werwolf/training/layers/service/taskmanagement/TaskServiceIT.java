@@ -2,7 +2,7 @@ package industries.werwolf.training.layers.service.taskmanagement;
 
 import industries.werwolf.training.layers.persistence.jpa.taskmanagement.TaskJpa;
 import industries.werwolf.training.layers.persistence.jpa.taskmanagement.TaskRepositoryJpa;
-import industries.werwolf.training.layers.persistence.util.Page;
+import industries.werwolf.training.layers.persistence.util.SortOrder;
 import industries.werwolf.training.layers.service.TestConfig;
 import jakarta.validation.ValidationException;
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,7 +42,8 @@ class TaskServiceIT {
         var now = clock.instant();
         var due = LocalDate.of(2025, 2, 7);
         taskService.createTask("Do this", due);
-        assertThat(taskService.list(Page.ofSize(1))).singleElement()
+        List<SortOrder> sortOrders = List.of(new SortOrder("creationDate", SortOrder.Direction.DESC));
+        assertThat(taskService.getTaskListDataProvider().fetch(0, 1, null, sortOrders)).singleElement()
                 .matches(task -> task.getDescription().equals("Do this") && due.equals(task.getDueDate())
                         && task.getCreationDate().isAfter(now));
     }

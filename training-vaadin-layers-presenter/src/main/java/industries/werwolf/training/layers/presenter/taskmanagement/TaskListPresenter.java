@@ -41,7 +41,7 @@ public class TaskListPresenter {
         view.openProgressDialog();
         SecurityContext context = SecurityUtils.getContext();
         CompletableFuture
-                .runAsync(() -> SecurityUtils.doInContext(context, () -> snail.creep(200, 100)))
+                .runAsync(() -> SecurityUtils.doInContext(context, () -> snail.creep(20, 100)))
                 .whenComplete((result, error) ->
                         SecurityUtils.doInContext(context, () -> {
                             registration.remove();
