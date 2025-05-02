@@ -2,14 +2,11 @@ package industries.werwolf.training.layers.persistence.jpa.taskmanagement;
 
 import industries.werwolf.training.layers.persistence.taskmanagement.Task;
 import industries.werwolf.training.layers.persistence.taskmanagement.TaskRepository;
-import industries.werwolf.training.layers.persistence.util.Page;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static industries.werwolf.training.layers.persistence.jpa.util.SpringFrameworkConverter.convertToPageRequest;
+import java.util.Collection;
 
 @Repository
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -30,7 +27,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public List<Task> findAllTasks(Page page) {
-        return repository.findAllBy(convertToPageRequest(page)).map(Task.class::cast).toList();
+    public Collection<Task> findAll() {
+        return repository.findAll().stream().map(Task.class::cast).toList();
     }
 }

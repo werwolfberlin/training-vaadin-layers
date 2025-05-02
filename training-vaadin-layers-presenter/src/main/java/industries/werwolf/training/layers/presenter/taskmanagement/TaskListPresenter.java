@@ -23,7 +23,7 @@ public class TaskListPresenter {
     public void viewInitialized(TaskListView view) {
         this.view = view;
 
-        view.init(taskService.getTaskListDataProvider());
+        view.init(taskService.getAllTasks());
     }
 
     public void createTaskClicked(String description, LocalDate dueDate) {

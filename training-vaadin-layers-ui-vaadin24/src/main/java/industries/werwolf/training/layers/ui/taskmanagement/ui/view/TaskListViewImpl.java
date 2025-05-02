@@ -17,15 +17,14 @@ import industries.werwolf.training.layers.persistence.jpa.taskmanagement.TaskJpa
 import industries.werwolf.training.layers.persistence.taskmanagement.Task;
 import industries.werwolf.training.layers.presenter.taskmanagement.TaskListPresenter;
 import industries.werwolf.training.layers.presenter.taskmanagement.TaskListView;
-import industries.werwolf.training.layers.service.util.FilterableDataProvider;
 import industries.werwolf.training.layers.ui.base.ui.component.ViewToolbar;
 import industries.werwolf.training.layers.ui.base.ui.view.MainLayoutImpl;
-import industries.werwolf.training.layers.ui.util.GridDataProviderAdapter;
 import jakarta.annotation.security.PermitAll;
 
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Collection;
 import java.util.Optional;
 
 @PermitAll
@@ -83,8 +82,8 @@ public class TaskListViewImpl extends Main implements TaskListView {
     }
 
     @Override
-    public void init(FilterableDataProvider<Task> tasks) {
-        taskGrid.setItems(new GridDataProviderAdapter<>(tasks));
+    public void init(Collection<Task> tasks) {
+        taskGrid.setItems(tasks);
     }
 
     @Override
