@@ -9,7 +9,7 @@ import org.jspecify.annotations.Nullable;
 import java.time.Instant;
 import java.time.LocalDate;
 
-@Entity
+@Entity(name = "Task")
 @Table(name = "task")
 public class TaskJpa extends AbstractEntityJpa<Long> implements Task {
 
