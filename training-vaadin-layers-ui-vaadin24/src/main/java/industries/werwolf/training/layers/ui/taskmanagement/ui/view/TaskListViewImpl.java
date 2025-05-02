@@ -19,15 +19,17 @@ import industries.werwolf.training.layers.presenter.taskmanagement.TaskListPrese
 import industries.werwolf.training.layers.presenter.taskmanagement.TaskListView;
 import industries.werwolf.training.layers.service.util.FilterableDataProvider;
 import industries.werwolf.training.layers.ui.base.ui.component.ViewToolbar;
-import industries.werwolf.training.layers.ui.base.ui.view.MainLayout;
+import industries.werwolf.training.layers.ui.base.ui.view.MainLayoutImpl;
 import industries.werwolf.training.layers.ui.util.GridDataProviderAdapter;
+import jakarta.annotation.security.PermitAll;
 
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Optional;
 
-@Route(value = "task-list", layout = MainLayout.class)
+@PermitAll
+@Route(value = "task-list", layout = MainLayoutImpl.class)
 @PageTitle("Task List")
 @Menu(order = 0, icon = "vaadin:clipboard-check", title = "Task List")
 public class TaskListViewImpl extends Main implements TaskListView {
