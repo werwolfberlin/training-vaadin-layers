@@ -18,9 +18,11 @@ import industries.werwolf.training.layers.persistence.taskmanagement.Task;
 import industries.werwolf.training.layers.presenter.taskmanagement.TaskListPresenter;
 import industries.werwolf.training.layers.presenter.taskmanagement.TaskListView;
 import industries.werwolf.training.layers.service.util.FilterableDataProvider;
+import industries.werwolf.training.layers.ui.base.ui.component.ProgressDialog;
 import industries.werwolf.training.layers.ui.base.ui.component.ViewToolbar;
 import industries.werwolf.training.layers.ui.base.ui.view.MainLayoutImpl;
 import industries.werwolf.training.layers.ui.util.GridDataProviderAdapter;
+import industries.werwolf.training.layers.ui.util.UiUtils;
 import jakarta.annotation.security.PermitAll;
 
 import java.time.Clock;
@@ -36,10 +38,10 @@ public class TaskListViewImpl extends Main implements TaskListView {
 
     private final TaskListPresenter presenter;
 
-    final TextField description = new TextField();
-    final DatePicker dueDate = new DatePicker();
-    final Button createBtn;
-    final Grid<Task> taskGrid;
+    private final ProgressDialog progressDialog = new ProgressDialog().withTitle("Creating Task").withShowPercentage(true);
+    private final TextField description = new TextField();
+    private final DatePicker dueDate = new DatePicker();
+    private final Grid<Task> taskGrid;
 
     public TaskListViewImpl(TaskListPresenter presenter, Clock clock) {
         this.presenter = presenter;
@@ -52,7 +54,7 @@ public class TaskListViewImpl extends Main implements TaskListView {
         dueDate.setPlaceholder("Due date");
         dueDate.setAriaLabel("Due date");
 
-        createBtn = new Button("Create", event -> presenter.createTaskClicked(description.getValue(), dueDate.getValue()));
+        Button createBtn = new Button("Create", event -> presenter.createTaskClicked(description.getValue(), dueDate.getValue()));
         createBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withZone(clock.getZone()).withLocale(getLocale());
@@ -77,7 +79,7 @@ public class TaskListViewImpl extends Main implements TaskListView {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        if(attachEvent.isInitialAttach()) {
+        if (attachEvent.isInitialAttach()) {
             presenter.viewInitialized(this);
         }
     }
@@ -89,18 +91,38 @@ public class TaskListViewImpl extends Main implements TaskListView {
 
     @Override
     public void refreshTaskList() {
-        taskGrid.getDataProvider().refreshAll();
+        UiUtils.doInUiThread(getUI(), ui -> taskGrid.getDataProvider().refreshAll());
     }
 
     @Override
     public void clearInputFields() {
-        description.clear();
-        dueDate.clear();
+        UiUtils.doInUiThread(getUI(), ui -> {
+            description.clear();
+            dueDate.clear();
+        });
     }
 
     @Override
     public void showTaskAddedNotification() {
-        Notification.show("Task added", 3000, Notification.Position.BOTTOM_END)
-                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        UiUtils.doInUiThread(getUI(), ui ->
+                Notification.show("Task added", 3000, Notification.Position.BOTTOM_END)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS));
+    }
+
+    @Override
+    public void openProgressDialog() {
+        if (!progressDialog.isOpened()) {
+            progressDialog.open();
+        }
+    }
+
+    @Override
+    public void showProgress(double max, double current) {
+        UiUtils.doInUiThread(getUI(), ui -> progressDialog.setProgress(max, current));
+    }
+
+    @Override
+    public void hideProgress() {
+        UiUtils.doInUiThread(getUI(), ui -> progressDialog.close());
     }
 }

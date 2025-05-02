@@ -11,4 +11,10 @@ public interface TaskListView {
     void clearInputFields();
 
     void showTaskAddedNotification();
+
+    void openProgressDialog();
+
+    void showProgress(double max, double current);
+
+    void hideProgress();
 }
