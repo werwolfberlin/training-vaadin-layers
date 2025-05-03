@@ -1,29 +1,24 @@
 package industries.werwolf.training.layers.persistence.jpa.taskmanagement;
 
 import industries.werwolf.training.layers.persistence.filter.TaskFilter;
+import industries.werwolf.training.layers.persistence.jpa.base.AbstractDataProviderRepository;
 import industries.werwolf.training.layers.persistence.taskmanagement.Task;
 import industries.werwolf.training.layers.persistence.taskmanagement.TaskRepository;
 import industries.werwolf.training.layers.persistence.util.SortOrder;
 import io.micrometer.common.util.StringUtils;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public class TaskRepositoryImpl implements TaskRepository {
-
-    @PersistenceContext
-    private EntityManager entityManager;
+public class TaskRepositoryImpl extends AbstractDataProviderRepository<TaskFilter> implements TaskRepository {
 
     private final TaskRepositoryJpa repository;
 
@@ -41,8 +36,7 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public List<Task> findAllTasks(int offset, int limit, @Nullable TaskFilter filter, List<SortOrder> sortOrders) {
-        List<String> sort = sortOrders.stream().map(so -> "t." + so.property() + " " + so.direction().name()).toList();
-        TypedQuery<TaskJpa> query = createQuery("SELECT t FROM Task t", filter, sort, TaskJpa.class);
+        TypedQuery<TaskJpa> query = createQuery("SELECT t FROM Task t", filter, sortOrders.stream().map(so -> new SortOrder("t." + so.property(), so.direction())).toList(), TaskJpa.class);
         return query.setFirstResult(offset).setMaxResults(limit).getResultStream().map(Task.class::cast).toList();
     }
 
@@ -51,15 +45,8 @@ public class TaskRepositoryImpl implements TaskRepository {
         TypedQuery<Long> query = createQuery("SELECT count(t) FROM Task t", filter, null, Long.class);
         return query.getSingleResult();
     }
-
-    private <T> TypedQuery<T> createQuery(String sql,
-                                          @Nullable TaskFilter filter,
-                                          @Nullable List<String> sort,
-                                          Class<T> resultClass) {
-
-        Map<String, Object> params = new HashMap<>();
-        List<String> where = new ArrayList<>();
-
+    @Override
+    protected void processFilter(@Nullable TaskFilter filter, @NonNull List<String> where, @NonNull Map<String, Object> params) {
         if(filter != null && StringUtils.isNotBlank(filter.getSearchTerm())) {
             where.add("t.description LIKE :searchTerm");
             params.put("searchTerm", "%" + filter.getSearchTerm() + "%");
@@ -75,18 +62,5 @@ public class TaskRepositoryImpl implements TaskRepository {
                 params.put("maxDate", filter.getDateRange().max());
             }
         }
-
-        if(!where.isEmpty()) {
-            sql += " WHERE " + String.join(" AND ", where);
-        }
-
-        if(sort != null && !sort.isEmpty()) {
-            sql += " ORDER BY " + String.join(", ", sort);
-        }
-
-        TypedQuery<T> query = entityManager.createQuery(sql, resultClass);
-        params.forEach(query::setParameter);
-        System.out.println(sql);
-        return query;
     }
 }
