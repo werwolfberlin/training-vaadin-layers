@@ -14,16 +14,19 @@ public class ContactsPresenter {
 
     public ContactsPresenter(ContactsService service, ContactUpdatedBroadcaster broadcaster) {
         this.service = service;
-        broadcaster.addListener(this::initializeView);
+        broadcaster.addListener(this::setContacts);
     }
 
     public void viewInitialized(ContactsView view) {
         this.view = view;
-        initializeView();
+        setContacts();
+        view.setEditorReadOnly(true);
     }
 
-    private void initializeView() {
-        view.initialize(service.getContactsDataProvider());
+    private void setContacts() {
+        view.setContacts(service.getContactsDataProvider());
+        showPerson(null);
+        view.setEditorReadOnly(false);
     }
 
     public void contactChanged(Person value) {
@@ -36,6 +39,7 @@ public class ContactsPresenter {
     }
 
     private void showPerson(Person person) {
+        view.setEditorReadOnly(person == null);
         view.showPerson(person);
     }
 }

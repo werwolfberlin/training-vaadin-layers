@@ -37,7 +37,7 @@ public class TaskRepositoryImpl extends AbstractDataProviderRepository<TaskFilte
     @Override
     public List<Task> findAllTasks(int offset, int limit, @Nullable TaskFilter filter, List<SortOrder> sortOrders) {
         TypedQuery<TaskJpa> query = createQuery("SELECT t FROM Task t", filter, sortOrders.stream().map(so -> new SortOrder("t." + so.property(), so.direction())).toList(), TaskJpa.class);
-        return query.setFirstResult(offset).setMaxResults(limit).getResultStream().map(Task.class::cast).toList();
+        return query.setFirstResult(offset).setMaxResults(limit).getResultList().stream().map(Task.class::cast).toList();
     }
 
     @Override

@@ -13,6 +13,7 @@ public class PersonJpa extends AbstractEntityJpa<Long> implements Person {
 
     @Id
     @Column(name = "person_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "first_name", nullable = false, length = 64)
@@ -21,11 +22,11 @@ public class PersonJpa extends AbstractEntityJpa<Long> implements Person {
     @Column(name = "last_name", nullable = false, length = 64)
     private String lastName;
 
-    @OneToOne(targetEntity = PhoneNumberJpa.class)
+    @OneToOne(targetEntity = PhoneNumberJpa.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "phone_number_id")
     private PhoneNumber phoneNumber;
 
-    @OneToOne(targetEntity = AddressJpa.class)
+    @OneToOne(targetEntity = AddressJpa.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -56,7 +57,12 @@ public class PersonJpa extends AbstractEntityJpa<Long> implements Person {
 
     @Override
     public PhoneNumber getPhoneNumber() {
-        return phoneNumber;
+        return phoneNumber == null ? new PhoneNumberJpa() : phoneNumber;
+    }
+
+    @Override
+    public void setPhoneNumber(PhoneNumber phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
@@ -66,11 +72,16 @@ public class PersonJpa extends AbstractEntityJpa<Long> implements Person {
 
     @Override
     public Address getAddress() {
-        return address;
+        return address == null ? new AddressJpa() : address;
     }
 
     @Override
     public void setAddress(String type, String address1, String address2, String zipCode, String city, String country) {
         address = new AddressJpa(address1, address2, zipCode, city, country);
+    }
+
+    @Override
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

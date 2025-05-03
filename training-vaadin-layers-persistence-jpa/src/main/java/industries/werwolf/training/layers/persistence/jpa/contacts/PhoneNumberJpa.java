@@ -2,10 +2,7 @@ package industries.werwolf.training.layers.persistence.jpa.contacts;
 
 import industries.werwolf.training.layers.persistence.contacts.PhoneNumber;
 import industries.werwolf.training.layers.persistence.jpa.base.AbstractEntityJpa;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 
 @Entity(name = "PhoneNumber")
@@ -14,9 +11,10 @@ public class PhoneNumberJpa extends AbstractEntityJpa<Long> implements PhoneNumb
 
     @Id
     @Column(name = "phone_number_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "country_code", length = 3)
+    @Column(name = "country_code", length = 4)
     @Nullable
     private String countryCode;
 

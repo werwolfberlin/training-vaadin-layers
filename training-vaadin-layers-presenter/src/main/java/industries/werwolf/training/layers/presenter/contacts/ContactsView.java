@@ -5,7 +5,9 @@ import industries.werwolf.training.layers.persistence.filter.GlobalFilter;
 import industries.werwolf.training.layers.service.util.FilterableDataProvider;
 
 public interface ContactsView {
-    void initialize(FilterableDataProvider<Person, GlobalFilter> contactsDataProvider);
+    void setContacts(FilterableDataProvider<Person, GlobalFilter> contactsDataProvider);
 
     void showPerson(Person person);
+
+    void setEditorReadOnly(boolean readOnly);
 }

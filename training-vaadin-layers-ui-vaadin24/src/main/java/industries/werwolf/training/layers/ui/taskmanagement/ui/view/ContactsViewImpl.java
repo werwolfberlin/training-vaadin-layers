@@ -2,6 +2,7 @@ package industries.werwolf.training.layers.ui.taskmanagement.ui.view;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -53,6 +54,7 @@ public class ContactsViewImpl extends Main implements ContactsView {
         buttonNew.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         editor.addClassName(LumoUtility.Flex.AUTO);
+        editor.setMaxWidth(50, Unit.PERCENTAGE);
 
         grid.addClassName(LumoUtility.Flex.AUTO);
         grid.setHeightFull();
@@ -63,7 +65,7 @@ public class ContactsViewImpl extends Main implements ContactsView {
                 .setHeader("Last Name");
 
         grid.addColumn(p -> Optional.ofNullable(p.getPhoneNumber()).map(pn ->
-                Optional.ofNullable(pn.getCountryCode()).map(cc -> "+" + cc).orElse("") +
+                Optional.ofNullable(pn.getCountryCode()).orElse("") +
                         Optional.ofNullable(pn.getAreaCode()).map(ac -> "(" + ac + ")").orElse("") +
                         pn.getNumber()).orElse(""))
                 .setHeader("Phone Number");
@@ -97,7 +99,7 @@ public class ContactsViewImpl extends Main implements ContactsView {
     }
 
     @Override
-    public void initialize(FilterableDataProvider<Person, GlobalFilter> contactsDataProvider) {
+    public void setContacts(FilterableDataProvider<Person, GlobalFilter> contactsDataProvider) {
         dataProvider = new GridDataProviderAdapter<>(contactsDataProvider);
         grid.setItems(dataProvider);
     }
@@ -105,5 +107,10 @@ public class ContactsViewImpl extends Main implements ContactsView {
     @Override
     public void showPerson(Person person) {
         editor.showPerson(person);
+    }
+
+    @Override
+    public void setEditorReadOnly(boolean readOnly) {
+        editor.setReadOnly(readOnly);
     }
 }

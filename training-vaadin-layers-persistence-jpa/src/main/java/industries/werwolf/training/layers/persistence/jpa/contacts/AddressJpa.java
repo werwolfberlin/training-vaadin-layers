@@ -2,10 +2,7 @@ package industries.werwolf.training.layers.persistence.jpa.contacts;
 
 import industries.werwolf.training.layers.persistence.contacts.Address;
 import industries.werwolf.training.layers.persistence.jpa.base.AbstractEntityJpa;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.jspecify.annotations.Nullable;
 
 @Entity(name = "Address")
@@ -14,6 +11,7 @@ public class AddressJpa extends AbstractEntityJpa<Long> implements Address {
 
     @Id
     @Column(name = "address_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "address_1", nullable = false)

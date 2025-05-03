@@ -33,6 +33,7 @@ public abstract class AbstractDataProviderRepository<F extends GlobalFilter> {
         String select = sql + getWhere(where) + getOrderBy(sortOrders);
         TypedQuery<T> query = entityManager.createQuery(select, resultClass);
         params.forEach(query::setParameter);
+        System.out.println(select);
         return query;
     }
 
