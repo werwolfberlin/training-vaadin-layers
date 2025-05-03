@@ -56,72 +56,67 @@ public class TaskListViewImpl extends Main implements TaskListView {
     public TaskListViewImpl(TaskListPresenter presenter, Clock clock) {
         this.presenter = presenter;
 
-        try {
-            description.setPlaceholder("What do you want to do?");
-            description.setAriaLabel("Task description");
-            description.setMaxLength(TaskJpa.DESCRIPTION_MAX_LENGTH);
-            description.setMinWidth("20em");
+        description.setPlaceholder("What do you want to do?");
+        description.setAriaLabel("Task description");
+        description.setMaxLength(TaskJpa.DESCRIPTION_MAX_LENGTH);
+        description.setMinWidth("20em");
 
-            dueDate.setPlaceholder("Due date");
-            dueDate.setAriaLabel("Due date");
+        dueDate.setPlaceholder("Due date");
+        dueDate.setAriaLabel("Due date");
 
-            Button createBtn = new Button("Create", event -> presenter.createTaskClicked(description.getValue(), dueDate.getValue()));
-            createBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Button createBtn = new Button("Create", event -> presenter.createTaskClicked(description.getValue(), dueDate.getValue()));
+        createBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withZone(clock.getZone()).withLocale(getLocale());
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(getLocale());
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withZone(clock.getZone()).withLocale(getLocale());
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(getLocale());
 
-            TextField searchField = new TextField();
-            searchField.setPlaceholder("Search");
-            searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
-            searchField.setClearButtonVisible(true);
+        TextField searchField = new TextField();
+        searchField.setPlaceholder("Search");
+        searchField.setPrefixComponent(VaadinIcon.SEARCH.create());
+        searchField.setClearButtonVisible(true);
 
-            DatePicker dateFrom = new DatePicker();
-            dateFrom.setPlaceholder("From");
-            dateFrom.setClearButtonVisible(true);
+        DatePicker dateFrom = new DatePicker();
+        dateFrom.setPlaceholder("From");
+        dateFrom.setClearButtonVisible(true);
 
-            DatePicker dateTo = new DatePicker();
-            dateTo.setPlaceholder("To");
-            dateTo.setClearButtonVisible(true);
+        DatePicker dateTo = new DatePicker();
+        dateTo.setPlaceholder("To");
+        dateTo.setClearButtonVisible(true);
 
-            FlexLayout dateFilter = new FlexLayout(dateFrom, dateTo);
-            dateFilter.addClassName(LumoUtility.Gap.SMALL);
+        FlexLayout dateFilter = new FlexLayout(dateFrom, dateTo);
+        dateFilter.addClassName(LumoUtility.Gap.SMALL);
 
-            taskGrid.setSizeFull();
+        taskGrid.setSizeFull();
 
-            Grid.Column<Task> desc = taskGrid.addColumn(Task::getDescription)
-                    .setHeader("Description").setSortProperty("description");
+        Grid.Column<Task> desc = taskGrid.addColumn(Task::getDescription)
+                .setHeader("Description").setSortProperty("description");
 
-            Grid.Column<Task> dueDateColumn = taskGrid.addColumn(task -> Optional.ofNullable(task.getDueDate()).map(dateFormatter::format).orElse("Never"))
-                    .setHeader("Due Date").setSortProperty("dueDate");
+        Grid.Column<Task> dueDateColumn = taskGrid.addColumn(task -> Optional.ofNullable(task.getDueDate()).map(dateFormatter::format).orElse("Never"))
+                .setHeader("Due Date").setSortProperty("dueDate");
 
-            taskGrid.addColumn(task -> dateTimeFormatter.format(task.getCreationDate()))
-                    .setHeader("Creation Date").setSortProperty("creationDate");
+        taskGrid.addColumn(task -> dateTimeFormatter.format(task.getCreationDate()))
+                .setHeader("Creation Date").setSortProperty("creationDate");
 
-            HeaderRow headerRow = taskGrid.appendHeaderRow();
-            headerRow.getCell(desc).setComponent(searchField);
-            headerRow.getCell(dueDateColumn).setComponent(dateFilter);
+        HeaderRow headerRow = taskGrid.appendHeaderRow();
+        headerRow.getCell(desc).setComponent(searchField);
+        headerRow.getCell(dueDateColumn).setComponent(dateFilter);
 
-            searchField.addValueChangeListener(e -> searchTriggered(e.getValue(), dateFrom.getValue(), dateTo.getValue()));
-            dateFrom.addValueChangeListener(e -> {
-                dateTo.setMin(e.getValue());
-                searchTriggered(searchField.getValue(), e.getValue(), dateTo.getValue());
-            });
-            dateTo.addValueChangeListener(e -> {
-                dateFrom.setMax(e.getValue());
-                searchTriggered(searchField.getValue(), dateFrom.getValue(), e.getValue());
-            });
+        searchField.addValueChangeListener(e -> searchTriggered(e.getValue(), dateFrom.getValue(), dateTo.getValue()));
+        dateFrom.addValueChangeListener(e -> {
+            dateTo.setMin(e.getValue());
+            searchTriggered(searchField.getValue(), e.getValue(), dateTo.getValue());
+        });
+        dateTo.addValueChangeListener(e -> {
+            dateFrom.setMax(e.getValue());
+            searchTriggered(searchField.getValue(), dateFrom.getValue(), e.getValue());
+        });
 
-            setSizeFull();
-            addClassNames(LumoUtility.BoxSizing.BORDER, LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
-                    LumoUtility.Padding.MEDIUM, LumoUtility.Gap.SMALL);
+        setSizeFull();
+        addClassNames(LumoUtility.BoxSizing.BORDER, LumoUtility.Display.FLEX, LumoUtility.FlexDirection.COLUMN,
+                LumoUtility.Padding.MEDIUM, LumoUtility.Gap.SMALL);
 
-            add(new ViewToolbar("Task List", ViewToolbar.group(description, dueDate, createBtn)));
-            add(taskGrid);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        add(new ViewToolbar("Task List", ViewToolbar.group(description, dueDate, createBtn)));
+        add(taskGrid);
     }
 
     private void searchTriggered(String value, @Nullable LocalDate dateFrom, @Nullable LocalDate dateTo) {
