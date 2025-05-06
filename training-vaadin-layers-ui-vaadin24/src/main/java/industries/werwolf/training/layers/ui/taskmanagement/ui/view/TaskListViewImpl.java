@@ -120,10 +120,12 @@ public class TaskListViewImpl extends Main implements TaskListView {
     }
 
     private void searchTriggered(String value, @Nullable LocalDate dateFrom, @Nullable LocalDate dateTo) {
-        Optional.ofNullable(dataProvider).ifPresent(dp -> {
-            dp.setFilter(new TaskFilter(value, dateFrom == null && dateTo == null ? null : new Range<>(dateFrom, dateTo)));
-            taskGrid.getDataProvider().refreshAll();
-        });
+        Optional.ofNullable(dataProvider).ifPresent(dp -> dp.setFilter(getTaskFilter(value, dateFrom, dateTo)));
+    }
+
+    private static TaskFilter getTaskFilter(String value, @Nullable LocalDate dateFrom, @Nullable LocalDate dateTo) {
+        Range<LocalDate> dateRange = dateFrom == null && dateTo == null ? null : new Range<>(dateFrom, dateTo);
+        return new TaskFilter(value, dateRange);
     }
 
     @Override

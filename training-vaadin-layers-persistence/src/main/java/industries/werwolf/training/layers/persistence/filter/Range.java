@@ -1,4 +1,6 @@
 package industries.werwolf.training.layers.persistence.filter;
 
-public record Range<T>(T min, T max) {
+import org.jspecify.annotations.Nullable;
+
+public record Range<T>(@Nullable T min, @Nullable T max) {
 }
