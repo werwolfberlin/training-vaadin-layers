@@ -16,6 +16,7 @@ public abstract class AbstractDataProviderAdapter<T, F extends GlobalFilter, CF>
 
     public void setFilter(F filter) {
         this.filter = filter;
+        refreshAll();
     }
 
     protected static SortOrder toSortOrder(QuerySortOrder so) {
